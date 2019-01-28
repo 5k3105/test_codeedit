@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fonts/saxmono.ttf</file>
+    </qresource>
+</RCC>
