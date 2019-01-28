@@ -145,15 +145,3 @@ func (editor *CodeEditor) line_paintevent(event *gui.QPaintEvent) { /// line num
 	editor.line_area.PaintEventDefault(event)
 }
 
-/*
-// Here is the key to obtain the y coordinate of the block start
-QTextCursor blockCursor(block);
-QRect blockCursorRect = this->cursorRect(blockCursor);
-
-And then we can draw line number of each block via:
-
-painter.drawText(-5, blockCursorRect.y() /// + a little offset to align ///,
-                 m_lineNumberArea->width(), fixedLineHeight,
-                 Qt::AlignRight, number);
-
-*/
