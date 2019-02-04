@@ -117,8 +117,8 @@ func (editor *CodeEditor) paintEvent(event *gui.QPaintEvent) { /// line hilight
 	rect.SetX(0)
 	rect.SetWidth(editor.Viewport().Width())
 	painter.FillRect3(rect, editor.line_hilight)
-	painter.End()
 	editor.PaintEventDefault(event)
+	painter.DestroyQPainter()
 }
 
 func (editor *CodeEditor) line_paintevent(event *gui.QPaintEvent) { /// line numbers
@@ -127,21 +127,22 @@ func (editor *CodeEditor) line_paintevent(event *gui.QPaintEvent) { /// line num
 
 	block := editor.FirstVisibleBlock()
 	blockNumber := block.BlockNumber()
-	top := editor.BlockBoundingGeometry(block).Translated2(editor.ContentOffset()).Top()
-	bottom := top + editor.BlockBoundingRect(block).Height()
+	top := int(editor.BlockBoundingGeometry(block).Translated2(editor.ContentOffset()).Top())
+	bottom := top + int(editor.BlockBoundingRect(block).Height())
 
+	var pos *core.QRect
 	painter.SetPen2(editor.line_area_fontcolor)
-	for ; block.IsValid() && int(top) <= event.Rect().Bottom(); blockNumber++ {
-		if block.IsVisible() && int(bottom) >= event.Rect().Top() {
+	for ; block.IsValid() && top <= event.Rect().Bottom(); blockNumber++ {
+		if block.IsVisible() && bottom >= event.Rect().Top() {
 			number := strconv.Itoa(blockNumber + 1)
-			pos := core.NewQRectF4(0, top, float64(editor.line_area.Width()), float64(editor.FontMetrics().Height()))
-			option := gui.NewQTextOption2(core.Qt__AlignHCenter) /// Qt__AlignRight
-			painter.DrawText8(pos, number, option)
+			pos = core.NewQRect4(0, top, editor.line_area.Width(), editor.FontMetrics().Height())
+			boundingrect := painter.BoundingRect2(pos, int(core.Qt__AlignHCenter), number)
+			painter.DrawText6(pos, int(core.Qt__AlignHCenter), number, boundingrect)
 		}
 		block = block.Next()
 		top = bottom
-		bottom = top + editor.BlockBoundingRect(block).Height()
+		bottom = top + int(editor.BlockBoundingRect(block).Height())
 	}
 	editor.line_area.PaintEventDefault(event)
+	painter.DestroyQPainter()
 }
-
